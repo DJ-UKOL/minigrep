@@ -3,10 +3,7 @@ use std::{env, fs};
 fn main() {
     // Позволяем программе читать любые переданные ей аргументы командной строки,
     let args: Vec<String> = env::args().collect();  // а затем собирать значения в вектор.
-
-    // &args[0] - имя программы ("target/debug/minigrep")
-    let query = &args[1];       // Строка, которую мы ищем
-    let file_path = &args[2];   // Путь к файлу
+    let (query, file_path) = parse_config(&args);
 
     println!("Searching for {query}");
     println!("In file {file_path}");
@@ -15,4 +12,12 @@ fn main() {
         .expect("Should have been able to read the file");
 
     println!("With text:\n{contents}");
+}
+
+fn parse_config(args: &[String]) -> (&str, &str) {
+    // &args[0] - имя программы ("target/debug/minigrep")
+    let query = &args[1];       // Строка, которую мы ищем
+    let file_path = &args[2];   // Путь к файлу
+
+    (query, file_path)
 }
