@@ -10,9 +10,6 @@ fn main() {
                                          // который был передан в качестве кода состояния выхода.
     });
 
-    println!("Searching for {}", config.query);
-    println!("In file {}", config.file_path);
-
     if let Err(e) = minigrep::run(config) {   // if let используется, чтобы проверить возвращает ли run значение Err
         println!("Application error: {e}");
         process::exit(1);
