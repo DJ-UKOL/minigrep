@@ -24,6 +24,39 @@ impl Config {
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {      // Box<dyn Error> функция будет возвращать тип реализующий типаж Error, ошибки могут быть разных типов в разных случаях. dyn - динамический
     let contents = fs::read_to_string(config.file_path)?;    // открывает файл и возвращает содержимое файла. ?-проброс ошибки
-    println!("With text:\n{contents}");
+
+    for line in search(&config.query, &contents) {
+        println!("{line}");
+    }
     Ok(())
+}
+
+// Принимает запрос и текст для поиска, а возвращает только те строки из текста,
+// которые содержат запрос
+pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> { //время жизни назначем content, т.к. он содержить текст и мы возвращаем часть текста
+    let mut results = Vec::new();
+    for line in contents.lines() {  // Метод lines возвращает итератор
+        if line.contains(query) {   // проверяем содержит ли текущая строка нашу искомую строку
+            results.push(line);     // сохранение совпавшей строки
+        }
+    }
+    results
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    // принимает запрос и текст для поиска, а возвращает только те строки из текста,
+    // которые содержат запрос
+    fn one_result() {
+        let query = "duct";
+        let contents = "\
+Rust:
+save, fast, productive.
+Pick three.";       // не помещать символ новой строки в начало содержимого этого строкового литерала
+
+
+        assert_eq!(vec!["save, fast, productive."], search(query, contents));
+    }
 }
