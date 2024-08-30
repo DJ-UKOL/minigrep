@@ -8,25 +8,23 @@ pub struct Config {
 }
 
 impl Config {
-
     // Конструктор для структуры Config
-    pub fn build(args: &[String]) -> Result<Config, &'static str> {     // 'static - статическое время жизни которое равно времени выполнения программы
-        // нужно проверять, что срез достаточно длинный, перед попыткой доступа по индексам 1 и 2
+    pub fn build(
+        mut args: impl Iterator<Item = String>,) -> Result<Config, &'static str> {     // 'static - статическое время жизни которое равно времени выполнения программы
 
+        args.next();    // пропускаем первый аргумент
 
+        let query = match args.next() {     // второй аргумент
+            None => return Err("Didn't get a query string"),
+            Some(arg) => arg,
+        };
 
-        if args.len() < 3 {
-            return Err("not enough argument");  // Если меньше 3, то возвращаем ошибку
-        }
-        // &args[0] - имя программы ("target/debug/minigrep")
-        let query = args[1].clone();       // .clone() делает полную копию данных для экземпляра Config для владения
-        let file_path = args[2].clone();
-        let mut ignore_case = env::var("IGNORE_CASE").is_ok();
-        if args.len() > 3 {
-            if args[3].to_lowercase() == "ignore" {
-                ignore_case = true;
-            }
-        }
+        let file_path = match args.next() { // третий аргумент
+            None => return Err("Didn't get a file path"),
+            Some(arg) => arg
+        };
+
+        let ignore_case = env::var("IGNORE CASE").is_ok();
 
         Ok(Config { query, file_path, ignore_case, })
     }
