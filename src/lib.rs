@@ -47,13 +47,11 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {      // Box<dyn Error
 // Принимает запрос и текст для поиска, а возвращает только те строки из текста,
 // которые содержат запрос
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> { //время жизни назначем content, т.к. он содержить текст и мы возвращаем часть текста
-    let mut results = Vec::new();
-    for line in contents.lines() {  // Метод lines возвращает итератор
-        if line.contains(query) {   // проверяем содержит ли текущая строка нашу искомую строку
-            results.push(line);     // сохранение совпавшей строки
-        }
-    }
-    results
+
+    contents
+        .lines()    // итератор
+        .filter(|line| line.contains(query))
+        .collect()
 }
 
 // Функция поиска без учета регистра
